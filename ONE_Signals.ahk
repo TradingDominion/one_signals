@@ -5,7 +5,11 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ; This script makes use of the following repo: https://github.com/hi5/CSV
-#Include Lib\csv.ahk
+; File contents: https://raw.githubusercontent.com/hi5/CSV/master/csv.ahk
+; You'll need to add csv.ahk to any of the following locations:
+;      .\Lib
+;      MyDocuments\AutoHotKey\Lib
+;      <AutoHotKeyInstallationDir>\AutoHotKey\Lib
 
 SigRow := 2    ; this will be the row of the oldest date (skipping the header line)
 
@@ -76,7 +80,7 @@ BtnLoadEvt:
 	GuiControl, Show, BtnNextDayEvt
 	GuiControl, Show, ChkLinkONE
 
-	SB_SetText("F7: Prev day     F8: Next day     F11: Link To One")   ; status bar
+	SB_SetText("  F7: Prev day     F8: Next day     F11: Link To One")   ; status bar
 
 	return
 

@@ -22,22 +22,27 @@ Gui, Add, Checkbox, x131 y80 w90 h20 vChkLinkONE, Link with ONE
 Gui, Add, StatusBar,, `  Please load a signal file
 Gui, Add, ListView, x17 y110 r1 w330 vLVSigData,
 
-; initially hide/disable some controls until the signal file is loaded
-GuiControl, Hide, SigDate
-GuiControl, Hide, BtnPrevDayEvt
-GuiControl, Hide, BtnNextDayEvt
-GuiControl, Hide, ChkLinkONE
-GuiControl, Hide, LVSigData
+; pre-load the prior signal file if it exists
+IniRead, ExistingFilePath, ONE_Signals.ini, DataFile, FilePath
+if (ExistingFilePath != "ERROR" and FileExist(ExistingFilePath))
+	LoadSignalFile(ExistingFilePath)
+else {
+	; initially hide/disable some controls until the signal file is loaded
+	GuiControl, Hide, SigDate
+	GuiControl, Hide, BtnPrevDayEvt
+	GuiControl, Hide, BtnNextDayEvt
+	GuiControl, Hide, ChkLinkONE
+	GuiControl, Hide, LVSigData
+}
 
 Gui, Show, w360 h195, Signal Browser
 return
 
 
-BtnLoadEvt:
-	FileSelectFile, SelectedFile, 3, , Open a file, CSV Files (*.csv)   ; 3 = file and path must exit
+LoadSignalFile(SelectedFile) {
 	CSV_Load(SelectedFile, "data")
-	TotRows := CSV_TotalRows("data")
-	TotSignals := CSV_TotalCols("data") - 1   ; we'll ignore the Date column
+	global TotRows := CSV_TotalRows("data")
+	global TotSignals := CSV_TotalCols("data") - 1   ; we'll ignore the Date column
 	FirstDate := CSV_ReadCell("data", 2, 1)
 	LastDate := CSV_ReadCell("data", TotRows, 1)
 	FirstDate_short := StrReplace(FirstDate, "-", "")
@@ -69,6 +74,13 @@ BtnLoadEvt:
 
 	SB_SetText("  F7: Prev day     F8: Next day     F11: Link To One")   ; status bar
 
+}
+
+
+BtnLoadEvt:
+	FileSelectFile, SelectedFile, 3, , Open a file, CSV Files (*.csv)   ; 3 = file and path must exit
+	IniWrite, %SelectedFile%, ONE_Signals.ini, DataFile, FilePath
+	LoadSignalFile(SelectedFile)
 	return
 
 

@@ -19,33 +19,17 @@ Gui, Add, DateTime, x115 y44 w120 h30 vSigDate gDateChangeEvt, ddd dd MMM yyyy
 Gui, Add, Button, x17 y44 w90 h30 vBtnPrevDayEvt gBtnPrevDayEvt, Prev Day
 Gui, Add, Button, x247 y44 w100 h30 vBtnNextDayEvt gBtnNextDayEvt, Next Day
 Gui, Add, Checkbox, x131 y80 w90 h20 vChkLinkONE, Link with ONE
-Gui, Add, StatusBar,, Please load a signal file
-
-; signal label text objects
-Gui, Font, bold
-Gui, Add, Text, x17 y110 w90 h20 vLblSig1,
-Gui, Add, Text, x115 y110 w90 h20 vLblSig2,
-Gui, Add, Text, x247 y110 w90 h20 vLblSig3,
-GuiControl, +Center, LblSig1
-GuiControl, +Center, LblSig2
-GuiControl, +Center, LblSig3
-
-; signal data text objects
-Gui, Font, norm
-Gui, Add, Text, x17 y135 w90 h20 vTxtSig1Data,
-Gui, Add, Text, x115 y135 w90 h20 vTxtSig2Data,
-Gui, Add, Text, x247 y135 w90 h20 vTxtSig3Data,
-GuiControl, +Center, TxtSig1Data
-GuiControl, +Center, TxtSig2Data
-GuiControl, +Center, TxtSig3Data
+Gui, Add, StatusBar,, `  Please load a signal file
+Gui, Add, ListView, x17 y110 r1 w330 vLVSigData,
 
 ; initially hide/disable some controls until the signal file is loaded
 GuiControl, Hide, SigDate
 GuiControl, Hide, BtnPrevDayEvt
 GuiControl, Hide, BtnNextDayEvt
 GuiControl, Hide, ChkLinkONE
+GuiControl, Hide, LVSigData
 
-Gui, Show, w360 h180, Signal Browser
+Gui, Show, w360 h195, Signal Browser
 return
 
 
@@ -53,6 +37,7 @@ BtnLoadEvt:
 	FileSelectFile, SelectedFile, 3, , Open a file, CSV Files (*.csv)   ; 3 = file and path must exit
 	CSV_Load(SelectedFile, "data")
 	TotRows := CSV_TotalRows("data")
+	TotSignals := CSV_TotalCols("data") - 1   ; we'll ignore the Date column
 	FirstDate := CSV_ReadCell("data", 2, 1)
 	LastDate := CSV_ReadCell("data", TotRows, 1)
 	FirstDate_short := StrReplace(FirstDate, "-", "")
@@ -60,25 +45,27 @@ BtnLoadEvt:
 	GuiControl, +Range%FirstDate_short%-%LastDate_short%, SigDate
 	GuiControl,, SigDate, % LastDate_short
 
-	; update the labels
-	SigRowContents := CSV_ReadRow("data", 1)
-	SigElements := StrSplit(SigRowContents, ",")
-	GuiControl,, LblSig1, % SigElements[2]
-	GuiControl,, LblSig2, % SigElements[3]
-	GuiControl,, LblSig3, % SigElements[4]
+	; ListView control - header row (signal names)
+	ColWidth := (330 / TotSignals) - 2
+	SigNameRowContents := CSV_ReadRow("data", 1)
+	SigNameElements := StrSplit(SigNameRowContents, ",")
+	Loop %TotSignals% {
+		SigElementIndex := A_Index + 1
+		LV_InsertCol(A_Index, ColWidth, SigNameElements[SigElementIndex])
+		LV_ModifyCol(A_Index, "Center")
+	}
 
-	; update the signal data
-	SigRowContents := CSV_ReadRow("data", 2)
-	SigElements := StrSplit(SigRowContents, ",")
-	GuiControl,, TxtSig1Data, % SigElements[2]
-	GuiControl,, TxtSig2Data, % SigElements[3]
-	GuiControl,, TxtSig3Data, % SigElements[4]
+	; ListView control - initial data row
+	SigDataRowContents := CSV_ReadRow("data", 2)
+	SigDataElements := StrSplit(SigDataRowContents, ",")
+	LV_add(, SigDataElements[2], SigDataElements[3], SigDataElements[4])
 
 	; re-enable the controls
 	GuiControl, Show, SigDate
 	GuiControl, Show, BtnPrevDayEvt
 	GuiControl, Show, BtnNextDayEvt
 	GuiControl, Show, ChkLinkONE
+	GuiControl, Show, LVSigData
 
 	SB_SetText("  F7: Prev day     F8: Next day     F11: Link To One")   ; status bar
 
@@ -92,9 +79,7 @@ BtnNextDayEvt:
 		SigElements := StrSplit(SigRowContents, ",")
 		NewDate := StrReplace(SigElements[1], "-", "")
 		GuiControl,, SigDate, % NewDate
-		GuiControl,, TxtSig1Data, % SigElements[2]
-		GuiControl,, TxtSig2Data, % SigElements[3]
-		GuiControl,, TxtSig3Data, % SigElements[4]
+		LV_Modify(1,, SigElements[2], SigElements[3], SigElements[4])
 	}
 	return
 
@@ -106,9 +91,7 @@ BtnPrevDayEvt:
 		SigElements := StrSplit(SigRowContents, ",")
 		NewDate := StrReplace(SigElements[1], "-", "")
 		GuiControl,, SigDate, % NewDate
-		GuiControl,, TxtSig1Data, % SigElements[2]
-		GuiControl,, TxtSig2Data, % SigElements[3]
-		GuiControl,, TxtSig3Data, % SigElements[4]
+		LV_Modify(1,, SigElements[2], SigElements[3], SigElements[4])
 	}
 	return
 
@@ -122,9 +105,7 @@ DateChangeEvt:
 	SigElements := StrSplit(SigRowContents, ",")
 	NewDate := StrReplace(SigElements[1], "-", "")
 	GuiControl,, SigDate, % NewDate
-	GuiControl,, TxtSig1Data, % SigElements[2]
-	GuiControl,, TxtSig2Data, % SigElements[3]
-	GuiControl,, TxtSig3Data, % SigElements[4]
+	LV_Modify(1,, SigElements[2], SigElements[3], SigElements[4])
 	return
 
 

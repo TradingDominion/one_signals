@@ -4,7 +4,7 @@ This is a tool that will allow you to visually display signals stored within a C
 
 The pop-up window remains always on top of other windows.
 
-![](https://i.imgur.com/7TVrMGd.png)
+![](https://i.imgur.com/HD8wklX.png)
 
 The CSV file needs to have the first column being the date, in the format of yyyy-MM-dd, 
 and can then have up to 3 extra columns which will be used to display any signal information.

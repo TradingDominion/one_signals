@@ -173,25 +173,11 @@ GuiClose:
 
 ; keyboard shortcuts
 F7::    ; keyboard shortcut for the "Prev Day" button
-	GuiControlGet, LinkStatus,, ChkLinkONE
-	if (LinkStatus = 1) {
-		WinActivate, OptionNET Explorer
-		WinWaitActive, OptionNET Explorer
-		SendInput {F2}
-	}
-
 	gosub, BtnPrevDayEvt
 	return
 
 
 F8::     ; keyboard shortcut for the "Next Day" button
-	GuiControlGet, LinkStatus,, ChkLinkONE
-	if (LinkStatus = 1) {
-		WinActivate, OptionNET Explorer
-		WinWaitActive, OptionNET Explorer
-		SendInput {F3}
-	}
-
 	gosub, BtnNextDayEvt
 	return
 

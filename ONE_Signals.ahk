@@ -131,6 +131,13 @@ BtnNextDayEvt:
 	if (SigRow < TotRows) {
 		++SigRow
 		Display_Data(SigRow)
+
+		GuiControlGet, LinkStatus,, ChkLinkONE
+		if (LinkStatus = 1) {
+			WinActivate, OptionNET Explorer
+			WinWaitActive, OptionNET Explorer
+			SendInput {F3}
+		}
 	}
 	return
 
@@ -139,6 +146,13 @@ BtnPrevDayEvt:
 	if (SigRow > 2) {
 		--SigRow
 		Display_Data(SigRow)
+
+		GuiControlGet, LinkStatus,, ChkLinkONE
+		if (LinkStatus = 1) {
+			WinActivate, OptionNET Explorer
+			WinWaitActive, OptionNET Explorer
+			SendInput {F2}
+		}
 	}
 	return
 
@@ -158,7 +172,7 @@ GuiClose:
 
 
 ; keyboard shortcuts
-F7::
+F7::    ; keyboard shortcut for the "Prev Day" button
 	GuiControlGet, LinkStatus,, ChkLinkONE
 	if (LinkStatus = 1) {
 		WinActivate, OptionNET Explorer
@@ -170,7 +184,7 @@ F7::
 	return
 
 
-F8::
+F8::     ; keyboard shortcut for the "Next Day" button
 	GuiControlGet, LinkStatus,, ChkLinkONE
 	if (LinkStatus = 1) {
 		WinActivate, OptionNET Explorer
@@ -182,7 +196,7 @@ F8::
 	return
 
 
-F11::
+F11::     ; keyboard shortcut for the "Link to ONE" checkbox
 	GuiControlGet, LinkStatus,, ChkLinkONE
 	if (LinkStatus = 0)
 		GuiControl,, ChkLinkONE, 1

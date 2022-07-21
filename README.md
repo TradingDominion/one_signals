@@ -18,3 +18,6 @@ Date,STFSv3aggr,DASTFSv2
 
 By selecting the "Link with ONE" checkbox, any time you click on "Prev Date" or "Next Date" then the relevant
 hotkeys will be sent through to OptionNet Explorer (ONE) in order to shift the date one day backward/forward.
+
+Please note that you'll need to launch this script with "Administrator rights" in order 
+for the script to also be able to control OptionNet Explorer.

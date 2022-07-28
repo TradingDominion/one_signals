@@ -99,6 +99,7 @@ Set_Colors(SigDataElements){
 		LVC.Cell(1, A_Index, Colors[1], Colors[2])
 	}
 	GuiControl, +Redraw, %HLV%
+	Sleep, 500    ; give it a bit of time to redraw the interface
 }
 
 

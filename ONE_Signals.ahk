@@ -36,7 +36,7 @@ else {
 	GuiControl, Hide, LVSigData
 }
 
-Gui, Show, w360 h195, Signal Browser
+Gui, Show, w360 h195, Signal Browser - v0.1.2
 
 return
 
